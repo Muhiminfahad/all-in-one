@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#111319" />
+  <title>Board, Hardware, Accessories & Worker Calculator</title>
+  <style>
+    :root {
+      --bg-main: #0c0f16;
+      --bg-card: #141925;
+      --bg-card-soft: #151a28;
+      --border-soft: #222837;
+      --accent: #ff7043;
+      --accent-soft: #ffab91;
+      --accent-blue: #42a5f5;
+      --text-main: #e3e8ff;
+      --text-soft: #9fa6c0;
+      --danger: #e53935;
+      --success: #66bb6a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 1180px;
+      margin: 24px auto 40px;
+      padding: 0 18px 40px;
+      background: radial-gradient(circle at top, #1c2235 0, #050711 55%);
+      color: var(--text-main);
+    }
+    h1 {
+      text-align: center;
+      margin: 0 0 4px;
+      font-size: 26px;
+      letter-spacing: .03em;
+    }
+    h1 span.brand-main { color: var(--accent); font-weight: 800; }
+    h1 span.brand-sub { color: var(--accent-blue); font-weight: 800; }
+    .subtitle {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-bottom: 18px;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .top-badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.05);
+      color: var(--text-soft);
+    }
+    .section-title {
+      margin-top: 26px;
+      font-size: 16px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #f5f7ff;
+    }
+    .section-title::before {
+      content: "";
+      width: 18px;
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-blue));
+      display: inline-block;
+    }
+    .section-sub {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-left: 24px;
+      margin-top: 2px;
+    }
+    .card {
+      background: radial-gradient(circle at top left, #1e2436 0, #101522 55%);
+      padding: 14px 18px 16px;
+      margin-top: 10px;
+      margin-bottom: 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.55);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(66,165,245,0.06), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+    .card.soft {
+      background: linear-gradient(145deg, #101520, #090c16);
+    }
+    .card.green::before {
+      background: radial-gradient(circle at top right, rgba(102,187,106,0.09), transparent 55%);
+    }
+    .card-inner { position: relative; z-index: 1; }
+    h2 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h2 span.badge {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.04);
+      color: var(--text-soft);
+    }
+    .note {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-top: 2px;
+      margin-bottom: 8px;
+    }
+    .flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .flex > div {
+      flex: 1 1 180px;
+      min-width: 165px;
+    }
+    label {
+      font-size: 11px;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 3px;
+      color: #eaefff;
+    }
+    input[type="number"],
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 7px;
+      border: 1px solid #252a3b;
+      background: #050814;
+      color: var(--text-main);
+      font-size: 12px;
+    }
+    input::placeholder { color: #5a6074; }
+    input[type="number"]:focus,
+    input[type="text"]:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent-soft);
+      box-shadow: 0 0 0 1px rgba(255,112,67,0.25);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 13px;
+      margin: 5px 4px 0 0;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: linear-gradient(135deg, #ff7043, #f4511e);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+      white-space: nowrap;
+    }
+    .btn span.icon { font-size: 13px; }
+    .btn.secondary { background: linear-gradient(135deg, #3949ab, #1e88e5); }
+    .btn.soft {
+      background: rgba(255,255,255,0.02);
+      border-color: rgba(255,255,255,0.04);
+      color: var(--text-soft);
+      box-shadow: none;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .btn.link { background: linear-gradient(135deg, #26c6da, #42a5f5); }
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 11px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      border: 1px solid #242a3b;
+      padding: 4px 5px;
+      text-align: center;
+      background: #050814;
+      color: #e2e6ff;
+    }
+    th {
+      background: linear-gradient(135deg, #111626, #0b1020);
+      font-weight: 600;
+      font-size: 11px;
+      color: #c5cbff;
+      white-space: nowrap;
+    }
+    tr:nth-child(even) td { background: #060918; }
+    tr:hover td { background: rgba(66,165,245,0.07); }
+    .amount { font-weight: 700; color: var(--accent-soft); }
+    hr {
+      border: none;
+      border-top: 1px dashed #272d3f;
+      margin: 16px 0 12px;
+    }
+    .summary-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .summary-row > div {
+      flex: 1 1 180px;
+      min-width: 160px;
+    }
+    .summary-row input[readonly] {
+      background: #050814;
+      border-style: dashed;
+    }
+    .tagline {
+      font-size: 11px;
+      text-align: right;
+      color: var(--text-soft);
+      margin-top: 18px;
+    }
+    @media (max-width: 720px) {
+      body { padding: 0 10px 30px; margin-top: 14px; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>
+    <span class="brand-main">Board, Hardware, Accessories</span>
+    &amp;
+    <span class="brand-sub">Worker Calculator</span>
+  </h1>
+  <p class="subtitle">
+    Cabinet hardware + profile edging &amp; handle (running ft) + Accessories + Board &amp; Worker হিসাব — সব একসাথে, client-wise save করা যাবে।
+  </p>
+  <div class="top-bar">
+    <div class="top-badge">Chowchala Interior · Cabinet Part B</div>
+    <div class="top-badge">Dark UI · Offline Ready (PWA)</div>
+  </div>
+
+  <div class="section-title">Client &amp; Entry Settings</div>
+  <div class="section-sub">Client নাম একই রেখে JSON export বা internal save করলে পরবর্তীতে import / select করে আবার edit করতে পারবে।</div>
+
+  <div class="card soft">
+    <div class="card-inner">
+      <h2>Client &amp; Project Info <span class="badge">Base Panel</span></h2>
+      <div class="note">
+        একই client এর জন্য Part A (Cabinet Auto Cut List) + Part B (এই হিসাব) – দুটো একসাথে ব্যবহার করতে পারো।
+      </div>
+      <div class="flex">
+        <div>
+          <label>Client Name</label>
+          <input type="text" id="clientName" placeholder="Example: Mr. Rahman" />
+        </div>
+        <div>
+          <label>Project / Apartment</label>
+          <input type="text" id="projectName" placeholder="Example: Flat 3B, Level-5" />
+        </div>
+        <div>
+          <label>Mobile (optional)</label>
+          <input type="text" id="clientMobile" placeholder="Contact number" />
+        </div>
+        <div>
+          <label>Input Unit</label>
+          <select id="unitSelect">
+            <option value="inch" selected>Inch (")</option>
+            <option value="ft">Feet (')</option>
+          </select>
+          <div class="note">
+            Feet নিলে x.yy মানে x ft + yy inch (যেমন 7.06 = 7'-6"). সব হিসাব শেষে inch → running ft এ convert হবে।
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-row" style="margin-top:10px;">
+        <div>
+          <label>Select Client (saved)</label>
+          <select id="clientSelect">
+            <option value="">— No client saved —</option>
+          </select>
+        </div>
+        <div>
+          <button class="btn" onclick="saveOrUpdateClient()"><span class="icon">💾</span> Save / Update Client</button>
+        </div>
+        <div>
+          <button class="btn secondary" onclick="loadSelectedClient()"><span class="icon">📂</span> Load Selected Client</button>
+        </div>
+        <div>
+          <button class="btn soft" onclick="newClient()"><span class="icon">🧹</span> New Client (Clear Form)</button>
+        </div>
+      </div>
+
+      <div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:8px;">
+        <button class="btn link" onclick="openPartA()">
+          <span class="icon">⬈</span> Open Cabinet Part A (Board &amp; Cut List)
+        </button>
+        <button class="btn secondary" onclick="openInteriorCalc()">
+          <span class="icon">⬈</span> Open Interior Calculator (Old)
+        </button>
+        <button class="btn soft" onclick="openInteriorApp()">
+          <span class="icon">⬈</span> Open Chowchala Interior App
+        </button>
+      </div>
+      <div class="note">
+        উপরের বাটনগুলো আলাদা ট্যাবে ওপেন হবে — তোমার সব calculator এক জায়গা থেকে access করতে সুবিধা হবে।
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">PART B – Hardware &amp; Accessories</div>
+
+  <div class="card">
+    <div class="card-inner">
+      <h2>১️⃣ Door Hinges Calculator <span class="badge">Auto Rule</span></h2>
+      <p class="note">
+        Height অনুযায়ী প্রতি door এ hinge সংখ্যা: ১–৩ ft → <b>২ hinge</b>, ৩–৪ ft → <b>৩ hinge</b>, ৪–৮ ft → <b>৫ hinge</b>। (এর বেশি হলে auto ৬ hinge ধরে)।
+      </p>
+      <button class="btn secondary" onclick="addDoorRow()"><span class="icon">➕</span> নতুন Door</button>
+      <table id="doorTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Door Name</th>
+            <th>Door Height (Unit)</th>
+            <th>Qty (Door)</th>
+            <th>Hinges / Door</th>
+            <th>Total Hinges (row)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><input type="text" value="Wardrobe Door 1" /></td>
+            <td><input type="number" value="84" step="0.1" /></td>
+            <td><input type="number" value="2" step="1" min="1" /></td>
+            <td class="hingePer"></td>
+            <td class="hingeTotal"></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="summary-row">
+        <div>
+          <label>Total Hinges (Auto)</label>
+          <input type="number" id="totalHinges" readonly />
+        </div>
+        <div>
+          <label>Price / Hinge (Tk)</label>
+          <input type="number" id="hingePrice" step="0.01" />
+        </div>
+        <div>
+          <label>Total Hinge Amount (Tk)</label>
+          <input type="number" id="hingeAmount" readonly />
+        </div>
+        <div>
+          <button class="btn" onclick="calcHinges()"><span class="icon">📐</span> হিসাব করুন</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-inner">
+      <h2>২️⃣ Drawer Channel Calculator <span class="badge">Depth → Size</span></h2>
+      <p class="note">
+        Drawer depth অনুযায়ী channel size auto হবে (14&quot; → 12&quot;, 16&quot; → 14&quot;, 18&quot; → 16&quot;, 20&quot; → 18&quot;, 22&quot; → 20&quot;)। প্রতি drawer এ ২টি channel ধরা হয়েছে।
+      </p>
+      <button class="btn secondary" onclick="addDrawerRow()"><span class="icon">➕</span> নতুন Drawer</button>
+      <table id="drawerTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Drawer Name</th>
+            <th>Drawer Depth (Unit)</th>
+            <th>Qty (Drawer)</th>
+            <th>Channel Size (inch)</th>
+            <th>Total Channel (row)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><input type="text" value="Wardrobe Drawer 1" /></td>
+            <td><input type="number" value="18" step="0.1" /></td>
+            <td><input type="number" value="3" step="1" min="1" /></td>
+            <td class="channelSize"></td>
+            <td class="channelTotal"></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="summary-row">
+        <div>
+          <label>Total Channels (Auto)</label>
+          <input type="number" id="totalChannels" readonly />
+        </div>
+        <div>
+          <label>Price / Channel (Tk)</label>
+          <input type="number" id="channelPrice" step="0.01" />
+        </div>
+        <div>
+          <label>Total Channel Amount (Tk)</label>
+          <input type="number" id="channelAmount" readonly />
+        </div>
+        <div>
+          <button class="btn" onclick="calcChannels()"><span class="icon">📐</span> হিসাব করুন</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-inner">
+      <h2>৩️⃣ Profile Edging Calculator <span class="badge">Running ft</span></h2>
+      <p class="note">
+        Width &amp; Height দিলে edge কোন কোন side এ হবে সেটা নির্বাচন করো – প্রতি part এর running ft &amp; মোট running ft বের হবে। Sft হিসাব নেই, শুধু running ft।
+      </p>
+      <button class="btn secondary" onclick="addEdgeRow()"><span class="icon">➕</span> নতুন Part (Edging)</button>
+      <table id="edgeTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Part Name</th>
+            <th>Width (Unit)</th>
+            <th>Height (Unit)</th>
+            <th>Edge Sides</th>
+            <th>Qty</th>
+            <th>Running / piece (ft)</th>
+            <th>Total Running (ft)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="summary-row">
+        <div>
+          <label>Total Edging Running (ft)</label>
+          <input type="number" id="edgeTotalRft" readonly />
+        </div>
+        <div>
+          <label>Price / Running ft (Tk)</label>
+          <input type="number" id="edgePrice" step="0.01" />
+        </div>
+        <div>
+          <label>Total Edging Amount (Tk)</label>
+          <input type="number" id="edgeAmount" readonly />
+        </div>
+        <div>
+          <button class="btn" onclick="calcEdging()"><span class="icon">📐</span> হিসাব করুন</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-inner">
+      <h2>৪️⃣ Profile Handle Calculator <span class="badge">Single Side</span></h2>
+      <p class="note">
+        Profile handle সাধারণত এক পাশে (vertical / horizontal) থাকে – শুধু ঐ side-এর length &amp; Qty দিলেই handle-এর মোট running ft বের হবে।
+      </p>
+      <button class="btn secondary" onclick="addHandleRow()"><span class="icon">➕</span> নতুন Part (Handle)</button>
+      <table id="handleTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Part Name</th>
+            <th>Handle Length (Unit)</th>
+            <th>Qty</th>
+            <th>Running / piece (ft)</th>
+            <th>Total Running (ft)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="summary-row">
+        <div>
+          <label>Total Handle Running (ft)</label>
+          <input type="number" id="handleTotalRft" readonly />
+        </div>
+        <div>
+          <label>Price / Running ft (Tk)</label>
+          <input type="number" id="handlePrice" step="0.01" />
+        </div>
+        <div>
+          <label>Total Handle Amount (Tk)</label>
+          <input type="number" id="handleAmount" readonly />
+        </div>
+        <div>
+          <button class="btn" onclick="calcHandle()"><span class="icon">📐</span> হিসাব করুন</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-inner">
+      <h2>৫️⃣ Accessories &amp; Misc. + Board Cost <span class="badge">Manual</span></h2>
+      <p class="note">
+        Lock, screw, clamp, profile light, wiring ইত্যাদি + সাথে board material cost – সব এক সাথে। এখানে সব ইনপুট manual থাকবে।
+      </p>
+      <button class="btn secondary" onclick="addAccessoryRow()"><span class="icon">➕</span> নতুন Accessories Item</button>
+      <table id="accessoryTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Item Name</th>
+            <th>Qty</th>
+            <th>Unit</th>
+            <th>Rate (Tk)</th>
+            <th>Amount (Tk)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="summary-row">
+        <div>
+          <label>Total Accessories Amount (Tk)</label>
+          <input type="number" id="accessoryTotal" readonly />
+        </div>
+      </div>
+      <hr>
+      <h3 style="margin:0 0 6px;font-size:13px;">Board Cost (Manual হিসাব)</h3>
+      <p class="note">
+        এখানে বিভিন্ন thickness / size অনুযায়ী একাধিক board entry করতে পারবে (যেমন 18mm HPL, 16mm Normal, 12mm Back ইত্যাদি)। Qty × Rate → Amount; সবগুলো যোগ হয়ে Total Board Amount দেখাবে।
+      </p>
+      <button class="btn secondary" onclick="addBoardRow()"><span class="icon">➕</span> নতুন Board Item</button>
+      <table id="boardTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Board Type / Description</th>
+            <th>Thickness (mm)</th>
+            <th>Size (ft)</th>
+            <th>Qty (sheet)</th>
+            <th>Rate / Board (Tk)</th>
+            <th>Amount (Tk)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="summary-row">
+        <div>
+          <label>Total Board Amount (Tk)</label>
+          <input type="number" id="boardAmount" readonly />
+        </div>
+        <div>
+          <button class="btn" onclick="calcAccessories()"><span class="icon">📐</span> Accessories + Board হিসাব</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">PART C – Board Worker হিসাব</div>
+
+  <div class="card green">
+    <div class="card-inner">
+      <h2>৬️⃣ Worker Payment (Board ভিত্তিক – Manual) <span class="badge">Multiple Entry</span></h2>
+      <p class="note">
+        এখানে প্রত্যেক জন worker / team এর জন্য আলাদা entry করতে পারবে। প্রত্যেক entry তে কতগুলো board কাজ হয়েছে ও প্রতি board rate লিখে দিলে row amount এবং মোট worker payment বের হবে।
+      </p>
+      <button class="btn secondary" onclick="addWorkerRow()"><span class="icon">➕</span> নতুন Worker Entry</button>
+      <table id="workerTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Description / Worker Name</th>
+            <th>Boards (sheet)</th>
+            <th>Rate / Board (Tk)</th>
+            <th>Amount (Tk)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="summary-row">
+        <div>
+          <label>Total Worker Amount (Tk)</label>
+          <input type="number" id="workerTotal" readonly />
+        </div>
+        <div>
+          <button class="btn" onclick="calcWorker()"><span class="icon">📐</span> Worker হিসাব</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Save / Load – Client-wise Export &amp; Import</div>
+
+  <div class="card soft">
+    <div class="card-inner">
+      <h2>৭️⃣ Data Save – JSON Export / Import <span class="badge">Client-wise</span></h2>
+      <p class="note">
+        প্রতিটি client এর জন্য আলাদা আলাদা JSON ফাইল রাখতে পারবে। পরে চাইলে আবার import করে ঠিক আগের মতই edit করতে পারবে। Browser এর ভিতরে localStorage-এও auto save থাকে।
+      </p>
+      <div class="summary-row">
+        <div>
+          <button class="btn" onclick="exportJson()"><span class="icon">⬇</span> Export Data (JSON)</button>
+        </div>
+        <div>
+          <label>Import Data (JSON)</label>
+          <input type="file" id="importFile" accept=".json" />
+        </div>
+        <div>
+          <button class="btn secondary" onclick="importJson()"><span class="icon">⬆</span> Import &amp; Load</button>
+        </div>
+      </div>
+      <div class="note">
+        ফাইল নামের মধ্যে client name থাকবে – উদাহরণ: <code>board_hardware_worker_Mr_Rahman.json</code> – পরে easy ভাবে খুঁজে পাওয়া যাবে।
+      </div>
+    </div>
+  </div>
+
+  <div class="tagline">
+    Designed for <b>Chowchala Interior</b> · Cabinet Part B (Board, Hardware, Accessories &amp; Worker Calculator)
+  </div>
+
+<script>
+  /* ===== Helper: Unit & Length ===== */
+  function getUnit() {
+    var sel = document.getElementById('unitSelect');
+    return sel ? sel.value : 'inch';
+  }
+  function toInch(vRaw) {
+    var unit = getUnit();
+    if (!vRaw) return 0;
+    if (unit === 'inch') return vRaw;
+    var isNeg = vRaw < 0;
+    var v = Math.abs(vRaw);
+    var ft = Math.trunc(v);
+    var inchPart = Math.round((v - ft) * 100);
+    var total = ft * 12 + inchPart;
+    return isNeg ? -total : total;
+  }
+
+  function openPartA() {
+    window.open('https://muhiminfahad.github.io/interior-cabinet-calculator/cabinet_all_export_import.html', '_blank');
+  }
+  function openInteriorCalc() {
+    window.open('https://muhiminfahad.github.io/interior-calculator/', '_blank');
+  }
+  function openInteriorApp() {
+    window.open('https://muhiminfahad.github.io/chowchala-interior-app/', '_blank');
+  }
+
+  /* ===== Door Hinges ===== */
+  function addDoorRow() {
+    var tbody = document.querySelector('#doorTable tbody');
+    var rowCount = tbody.rows.length + 1;
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td>' + rowCount + '</td>' +
+      '<td><input type="text" value="Door ' + rowCount + '" /></td>' +
+      '<td><input type="number" value="78" step="0.1" /></td>' +
+      '<td><input type="number" value="1" step="1" min="1" /></td>' +
+      '<td class="hingePer"></td>' +
+      '<td class="hingeTotal"></td>';
+    tbody.appendChild(tr);
+  }
+
+  function getHingesByHeight(hInch) {
+    var hFt = hInch / 12;
+    if (hFt <= 3) return 2;
+    if (hFt <= 4) return 3;
+    if (hFt <= 8) return 5;
+    return 6;
+  }
+
+  function calcHinges() {
+    var tbody = document.querySelector('#doorTable tbody');
+    var totalHinges = 0;
+    for (var i = 0; i < tbody.rows.length; i++) {
+      var row = tbody.rows[i];
+      var hRaw = parseFloat(row.cells[2].querySelector('input').value) || 0;
+      var h = toInch(hRaw);
+      var qty = parseFloat(row.cells[3].querySelector('input').value) || 0;
+      if (!h || !qty) {
+        row.querySelector('.hingePer').textContent = '';
+        row.querySelector('.hingeTotal').textContent = '';
+        continue;
+      }
+      var per = getHingesByHeight(h);
+      var total = per * qty;
+      row.querySelector('.hingePer').textContent = per;
+      row.querySelector('.hingeTotal').textContent = total;
+      totalHinges += total;
+    }
+    document.getElementById('totalHinges').value = totalHinges;
+    var price = parseFloat(document.getElementById('hingePrice').value) || 0;
+    document.getElementById('hingeAmount').value = (totalHinges * price).toFixed(2);
+    saveState();
+  }
+
+  /* ===== Drawer Channel ===== */
+  function addDrawerRow() {
+    var tbody = document.querySelector('#drawerTable tbody');
+    var rowCount = tbody.rows.length + 1;
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td>' + rowCount + '</td>' +
+      '<td><input type="text" value="Drawer ' + rowCount + '" /></td>' +
+      '<td><input type="number" value="18" step="0.1" /></td>' +
+      '<td><input type="number" value="1" step="1" min="1" /></td>' +
+      '<td class="channelSize"></td>' +
+      '<td class="channelTotal"></td>';
+    tbody.appendChild(tr);
+  }
+
+  function getChannelSize(depthInch) {
+    if (depthInch <= 14) return 12;
+    if (depthInch <= 16) return 14;
+    if (depthInch <= 18) return 16;
+    if (depthInch <= 20) return 18;
+    if (depthInch <= 22) return 20;
+    return depthInch - 2;
+  }
+
+  function calcChannels() {
+    var tbody = document.querySelector('#drawerTable tbody');
+    var totalChannels = 0;
+    for (var i = 0; i < tbody.rows.length; i++) {
+      var row = tbody.rows[i];
+      var dRaw = parseFloat(row.cells[2].querySelector('input').value) || 0;
+      var d = toInch(dRaw);
+      var qty = parseFloat(row.cells[3].querySelector('input').value) || 0;
+      if (!d || !qty) {
+        row.querySelector('.channelSize').textContent = '';
+        row.querySelector('.channelTotal').textContent = '';
+        continue;
+      }
+      var size = getChannelSize(d);
+      var total = qty * 2;
+      row.querySelector('.channelSize').textContent = size;
+      row.querySelector('.channelTotal').textContent = total;
+      totalChannels += total;
+    }
+    document.getElementById('totalChannels').value = totalChannels;
+    var price = parseFloat(document.getElementById('channelPrice').value) || 0;
+    document.getElementById('channelAmount').value = (totalChannels * price).toFixed(2);
+    saveState();
+  }
+
+  /* ===== Profile Edging (running ft) ===== */
+  function addEdgeRow() {
+    var tbody = document.querySelector('#edgeTable tbody');
+    var rowCount = tbody.rows.length + 1;
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td>' + rowCount + '</td>' +
+      '<td><input type="text" value="Part ' + rowCount + '" /></td>' +
+      '<td><input type="number" step="0.1" /></td>' +
+      '<td><input type="number" step="0.1" /></td>' +
+      '<td>' +
+        '<select>' +
+          '<option value="2-vert">2 Vertical side (Height×2)</option>' +
+          '<option value="2-horiz">2 Horizontal side (Width×2)</option>' +
+          '<option value="4-side">4 side (Width×2 + Height×2)</option>' +
+        '</select>' +
+      '</td>' +
+      '<td><input type="number" value="1" step="1" min="1" /></td>' +
+      '<td class="runPer"></td>' +
+      '<td class="runTotal"></td>';
+    tbody.appendChild(tr);
+  }
+
+  function calcEdging() {
+    var tbody = document.querySelector('#edgeTable tbody');
+    var totalR = 0;
+    for (var i = 0; i < tbody.rows.length; i++) {
+      var row = tbody.rows[i];
+      var wRaw = parseFloat(row.cells[2].querySelector('input').value) || 0;
+      var hRaw = parseFloat(row.cells[3].querySelector('input').value) || 0;
+      var sideType = row.cells[4].querySelector('select').value;
+      var qty = parseFloat(row.cells[5].querySelector('input').value) || 0;
+      var w = toInch(wRaw);
+      var h = toInch(hRaw);
+      if (!w && !h) {
+        row.querySelector('.runPer').textContent = '';
+        row.querySelector('.runTotal').textContent = '';
+        continue;
+      }
+      var lenInch = 0;
+      if (sideType === '2-vert') lenInch = 2 * h;
+      else if (sideType === '2-horiz') lenInch = 2 * w;
+      else lenInch = 2 * (w + h);
+      var runPer = lenInch / 12;
+      var runTotal = runPer * qty;
+      row.querySelector('.runPer').textContent = runPer.toFixed(3);
+      row.querySelector('.runTotal').textContent = runTotal.toFixed(3);
+      totalR += runTotal;
+    }
+    document.getElementById('edgeTotalRft').value = totalR.toFixed(3);
+    var price = parseFloat(document.getElementById('edgePrice').value) || 0;
+    document.getElementById('edgeAmount').value = (totalR * price).toFixed(2);
+    saveState();
+  }
+
+  /* ===== Profile Handle (running ft – single side) ===== */
+  function addHandleRow() {
+    var tbody = document.querySelector('#handleTable tbody');
+    var rowCount = tbody.rows.length + 1;
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td>' + rowCount + '</td>' +
+      '<td><input type="text" value="Handle ' + rowCount + '" /></td>' +
+      '<td><input type="number" step="0.1" /></td>' +
+      '<td><input type="number" value="1" step="1" min="1" /></td>' +
+      '<td class="runPer"></td>' +
+      '<td class="runTotal"></td>';
+    tbody.appendChild(tr);
+  }
+
+  function calcHandle() {
+    var tbody = document.querySelector('#handleTable tbody');
+    var totalR = 0;
+    for (var i = 0; i < tbody.rows.length; i++) {
+      var row = tbody.rows[i];
+      var lenRaw = parseFloat(row.cells[2].querySelector('input').value) || 0;
+      var qty = parseFloat(row.cells[3].querySelector('input').value) || 0;
+      var lenInch = toInch(lenRaw);
+      if (!lenInch || !qty) {
+        row.querySelector('.runPer').textContent = '';
+        row.querySelector('.runTotal').textContent = '';
+        continue;
+      }
+      var runPer = lenInch / 12;
+      var runTotal = runPer * qty;
+      row.querySelector('.runPer').textContent = runPer.toFixed(3);
+      row.querySelector('.runTotal').textContent = runTotal.toFixed(3);
+      totalR += runTotal;
+    }
+    document.getElementById('handleTotalRft').value = totalR.toFixed(3);
+    var price = parseFloat(document.getElementById('handlePrice').value) || 0;
+    document.getElementById('handleAmount').value = (totalR * price).toFixed(2);
+    saveState();
+  }
+
+  /* ===== Accessories + Board Cost ===== */
+  function addAccessoryRow() {
+    var tbody = document.querySelector('#accessoryTable tbody');
+    var rowCount = tbody.rows.length + 1;
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td>' + rowCount + '</td>' +
+      '<td><input type="text" value="Item ' + rowCount + '" /></td>' +
+      '<td><input type="number" value="1" step="1" min="0" /></td>' +
+      '<td><input type="text" value="pcs" /></td>' +
+      '<td><input type="number" value="0" step="0.01" /></td>' +
+      '<td class="amountCell"></td>';
+    tbody.appendChild(tr);
+  }
+
+  function addBoardRow() {
+    var tbody = document.querySelector('#boardTable tbody');
+    var rowCount = tbody.rows.length + 1;
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td>' + rowCount + '</td>' +
+      '<td><input type="text" value="18mm HPL ' + rowCount + '" /></td>' +
+      '<td><input type="number" value="18" step="0.1" /></td>' +
+      '<td><input type="text" value="8x4" /></td>' +
+      '<td><input type="number" value="0" step="0.01" /></td>' +
+      '<td><input type="number" value="0" step="0.01" /></td>' +
+      '<td class="amountCell"></td>';
+    tbody.appendChild(tr);
+  }
+
+  function calcAccessories() {
+    var tbody = document.querySelector('#accessoryTable tbody');
+    var total = 0;
+    for (var i = 0; i < tbody.rows.length; i++) {
+      var row = tbody.rows[i];
+      var qty = parseFloat(row.cells[2].querySelector('input').value) || 0;
+      var rate = parseFloat(row.cells[4].querySelector('input').value) || 0;
+      var amt = qty * rate;
+      row.querySelector('.amountCell').textContent = amt.toFixed(2);
+      total += amt;
+    }
+    document.getElementById('accessoryTotal').value = total.toFixed(2);
+
+    var bTbody = document.querySelector('#boardTable tbody');
+    var bTotal = 0;
+    for (var j = 0; j < bTbody.rows.length; j++) {
+      var r = bTbody.rows[j];
+      var bQty = parseFloat(r.cells[4].querySelector('input').value) || 0;
+      var bRate = parseFloat(r.cells[5].querySelector('input').value) || 0;
+      var bAmt = bQty * bRate;
+      r.querySelector('.amountCell').textContent = bAmt.toFixed(2);
+      bTotal += bAmt;
+    }
+    document.getElementById('boardAmount').value = bTotal.toFixed(2);
+    saveState();
+  }
+
+  /* ===== Worker (multiple entries) ===== */
+  function addWorkerRow() {
+    var tbody = document.querySelector('#workerTable tbody');
+    var rowCount = tbody.rows.length + 1;
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td>' + rowCount + '</td>' +
+      '<td><input type="text" value="Worker ' + rowCount + '" /></td>' +
+      '<td><input type="number" value="0" step="0.01" /></td>' +
+      '<td><input type="number" value="0" step="0.01" /></td>' +
+      '<td class="amountCell"></td>';
+    tbody.appendChild(tr);
+  }
+
+  function calcWorker() {
+    var tbody = document.querySelector('#workerTable tbody');
+    var total = 0;
+    for (var i = 0; i < tbody.rows.length; i++) {
+      var row = tbody.rows[i];
+      var boards = parseFloat(row.cells[2].querySelector('input').value) || 0;
+      var rate = parseFloat(row.cells[3].querySelector('input').value) || 0;
+      var amt = boards * rate;
+      row.querySelector('.amountCell').textContent = amt.toFixed(2);
+      total += amt;
+    }
+    document.getElementById('workerTotal').value = total.toFixed(2);
+    saveState();
+  }
+
+  /* ===== State Save / Load (localStorage + JSON export/import) ===== */
+  var STORAGE_KEY = 'chowchala_partB_state_v3';
+  var CLIENT_STORE_KEY = 'chowchala_partB_clients_v1';
+
+  function readRows(tableSelector, mapper) {
+    var tbody = document.querySelector(tableSelector + ' tbody');
+    var arr = [];
+    if (!tbody) return arr;
+    for (var i = 0; i < tbody.rows.length; i++) {
+      arr.push(mapper(tbody.rows[i]));
+    }
+    return arr;
+  }
+
+  function collectState() {
+    var state = {
+      client: {
+        name: document.getElementById('clientName').value || '',
+        project: document.getElementById('projectName').value || '',
+        mobile: document.getElementById('clientMobile').value || ''
+      },
+      unit: getUnit(),
+      hingePrice: document.getElementById('hingePrice').value || '',
+      hingeAmount: document.getElementById('hingeAmount').value || '',
+      channelPrice: document.getElementById('channelPrice').value || '',
+      channelAmount: document.getElementById('channelAmount').value || '',
+      edgePrice: document.getElementById('edgePrice').value || '',
+      edgeAmount: document.getElementById('edgeAmount').value || '',
+      handlePrice: document.getElementById('handlePrice').value || '',
+      handleAmount: document.getElementById('handleAmount').value || '',
+      accessoryTotal: document.getElementById('accessoryTotal').value || '',
+      boardAmount: document.getElementById('boardAmount').value || '',
+      workerTotal: document.getElementById('workerTotal').value || '',
+      doors: readRows('#doorTable', function(row) {
+        return {
+          name: row.cells[1].querySelector('input').value || '',
+          height: row.cells[2].querySelector('input').value || '',
+          qty: row.cells[3].querySelector('input').value || ''
+        };
+      }),
+      drawers: readRows('#drawerTable', function(row) {
+        return {
+          name: row.cells[1].querySelector('input').value || '',
+          depth: row.cells[2].querySelector('input').value || '',
+          qty: row.cells[3].querySelector('input').value || ''
+        };
+      }),
+      edging: readRows('#edgeTable', function(row) {
+        return {
+          name: row.cells[1].querySelector('input').value || '',
+          width: row.cells[2].querySelector('input').value || '',
+          height: row.cells[3].querySelector('input').value || '',
+          sideType: row.cells[4].querySelector('select').value,
+          qty: row.cells[5].querySelector('input').value || ''
+        };
+      }),
+      handles: readRows('#handleTable', function(row) {
+        return {
+          name: row.cells[1].querySelector('input').value || '',
+          length: row.cells[2].querySelector('input').value || '',
+          qty: row.cells[3].querySelector('input').value || ''
+        };
+      }),
+      accessories: readRows('#accessoryTable', function(row) {
+        return {
+          name: row.cells[1].querySelector('input').value || '',
+          qty: row.cells[2].querySelector('input').value || '',
+          unit: row.cells[3].querySelector('input').value || '',
+          rate: row.cells[4].querySelector('input').value || ''
+        };
+      }),
+      boards: readRows('#boardTable', function(row) {
+        return {
+          desc: row.cells[1].querySelector('input').value || '',
+          thick: row.cells[2].querySelector('input').value || '',
+          size: row.cells[3].querySelector('input').value || '',
+          qty: row.cells[4].querySelector('input').value || '',
+          rate: row.cells[5].querySelector('input').value || ''
+        };
+      }),
+      workers: readRows('#workerTable', function(row) {
+        return {
+          desc: row.cells[1].querySelector('input').value || '',
+          boards: row.cells[2].querySelector('input').value || '',
+          rate: row.cells[3].querySelector('input').value || ''
+        };
+      })
+    };
+    return state;
+  }
+
+  function rebuildTable(tableSelector, rows, builderFn) {
+    var tbody = document.querySelector(tableSelector + ' tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    if (!rows || !rows.length) return;
+    rows.forEach(builderFn);
+  }
+
+  function applyState(state) {
+    if (!state) return;
+    if (state.unit) {
+      document.getElementById('unitSelect').value = state.unit;
+    }
+    if (state.client) {
+      document.getElementById('clientName').value = state.client.name || '';
+      document.getElementById('projectName').value = state.client.project || '';
+      document.getElementById('clientMobile').value = state.client.mobile || '';
+    }
+    document.getElementById('hingePrice').value = state.hingePrice || '';
+    document.getElementById('hingeAmount').value = state.hingeAmount || '';
+    document.getElementById('channelPrice').value = state.channelPrice || '';
+    document.getElementById('channelAmount').value = state.channelAmount || '';
+    document.getElementById('edgePrice').value = state.edgePrice || '';
+    document.getElementById('edgeAmount').value = state.edgeAmount || '';
+    document.getElementById('handlePrice').value = state.handlePrice || '';
+    document.getElementById('handleAmount').value = state.handleAmount || '';
+    document.getElementById('accessoryTotal').value = state.accessoryTotal || '';
+    document.getElementById('boardAmount').value = state.boardAmount || '';
+    document.getElementById('workerTotal').value = state.workerTotal || '';
+
+    rebuildTable('#doorTable', state.doors, function(item, index) {
+      var tbody = document.querySelector('#doorTable tbody');
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + (index + 1) + '</td>' +
+        '<td><input type="text" value="' + (item.name || '') + '" /></td>' +
+        '<td><input type="number" value="' + (item.height || '') + '" step="0.1" /></td>' +
+        '<td><input type="number" value="' + (item.qty || 1) + '" step="1" min="1" /></td>' +
+        '<td class="hingePer"></td>' +
+        '<td class="hingeTotal"></td>';
+      tbody.appendChild(tr);
+    });
+
+    rebuildTable('#drawerTable', state.drawers, function(item, index) {
+      var tbody = document.querySelector('#drawerTable tbody');
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + (index + 1) + '</td>' +
+        '<td><input type="text" value="' + (item.name || '') + '" /></td>' +
+        '<td><input type="number" value="' + (item.depth || '') + '" step="0.1" /></td>' +
+        '<td><input type="number" value="' + (item.qty || 1) + '" step="1" min="1" /></td>' +
+        '<td class="channelSize"></td>' +
+        '<td class="channelTotal"></td>';
+      tbody.appendChild(tr);
+    });
+
+    rebuildTable('#edgeTable', state.edging, function(item, index) {
+      var tbody = document.querySelector('#edgeTable tbody');
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + (index + 1) + '</td>' +
+        '<td><input type="text" value="' + (item.name || '') + '" /></td>' +
+        '<td><input type="number" value="' + (item.width || '') + '" step="0.1" /></td>' +
+        '<td><input type="number" value="' + (item.height || '') + '" step="0.1" /></td>' +
+        '<td>' +
+          '<select>' +
+            '<option value="2-vert">2 Vertical side (Height×2)</option>' +
+            '<option value="2-horiz">2 Horizontal side (Width×2)</option>' +
+            '<option value="4-side">4 side (Width×2 + Height×2)</option>' +
+          '</select>' +
+        '</td>' +
+        '<td><input type="number" value="' + (item.qty || 1) + '" step="1" min="1" /></td>' +
+        '<td class="runPer"></td>' +
+        '<td class="runTotal"></td>';
+      tbody.appendChild(tr);
+      try {
+        tr.cells[4].querySelector('select').value = item.sideType || '2-vert';
+      } catch(e) {}
+    });
+
+    rebuildTable('#handleTable', state.handles, function(item, index) {
+      var tbody = document.querySelector('#handleTable tbody');
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + (index + 1) + '</td>' +
+        '<td><input type="text" value="' + (item.name || '') + '" /></td>' +
+        '<td><input type="number" value="' + (item.length || '') + '" step="0.1" /></td>' +
+        '<td><input type="number" value="' + (item.qty || 1) + '" step="1" min="1" /></td>' +
+        '<td class="runPer"></td>' +
+        '<td class="runTotal"></td>';
+      tbody.appendChild(tr);
+    });
+
+    rebuildTable('#accessoryTable', state.accessories, function(item, index) {
+      var tbody = document.querySelector('#accessoryTable tbody');
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + (index + 1) + '</td>' +
+        '<td><input type="text" value="' + (item.name || '') + '" /></td>' +
+        '<td><input type="number" value="' + (item.qty || 0) + '" step="1" min="0" /></td>' +
+        '<td><input type="text" value="' + (item.unit || 'pcs') + '" /></td>' +
+        '<td><input type="number" value="' + (item.rate || 0) + '" step="0.01" /></td>' +
+        '<td class="amountCell"></td>';
+      tbody.appendChild(tr);
+    });
+
+    rebuildTable('#boardTable', state.boards, function(item, index) {
+      var tbody = document.querySelector('#boardTable tbody');
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + (index + 1) + '</td>' +
+        '<td><input type="text" value="' + (item.desc || '') + '" /></td>' +
+        '<td><input type="number" value="' + (item.thick || '') + '" step="0.1" /></td>' +
+        '<td><input type="text" value="' + (item.size || '') + '" /></td>' +
+        '<td><input type="number" value="' + (item.qty || 0) + '" step="0.01" /></td>' +
+        '<td><input type="number" value="' + (item.rate || 0) + '" step="0.01" /></td>' +
+        '<td class="amountCell"></td>';
+      tbody.appendChild(tr);
+    });
+
+    rebuildTable('#workerTable', state.workers, function(item, index) {
+      var tbody = document.querySelector('#workerTable tbody');
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + (index + 1) + '</td>' +
+        '<td><input type="text" value="' + (item.desc || '') + '" /></td>' +
+        '<td><input type="number" value="' + (item.boards || 0) + '" step="0.01" /></td>' +
+        '<td><input type="number" value="' + (item.rate || 0) + '" step="0.01" /></td>' +
+        '<td class="amountCell"></td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  function saveState() {
+    try {
+      var state = collectState();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      console.log('Save error', e);
+    }
+  }
+
+  function loadStateFromStorage() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      var state = JSON.parse(raw);
+      applyState(state);
+    } catch (e) {
+      console.log('Load error', e);
+    }
+  }
+
+  /* ===== Client Save / Load (internal list) ===== */
+  function loadClientStore() {
+    try {
+      var raw = localStorage.getItem(CLIENT_STORE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+  function saveClientStore(store) {
+    try {
+      localStorage.setItem(CLIENT_STORE_KEY, JSON.stringify(store));
+    } catch (e) {}
+  }
+  function refreshClientSelect() {
+    var store = loadClientStore();
+    var sel = document.getElementById('clientSelect');
+    if (!sel) return;
+    var current = sel.value;
+    sel.innerHTML = '<option value="">— No client saved —</option>';
+    Object.keys(store).sort().forEach(function(key) {
+      var opt = document.createElement('option');
+      opt.value = key;
+      opt.textContent = key;
+      sel.appendChild(opt);
+    });
+    if (store[current]) sel.value = current;
+  }
+  function saveOrUpdateClient() {
+    var state = collectState();
+    var name = (state.client && state.client.name || '').trim();
+    if (!name) {
+      alert('Client Name লিখে তারপর save করুন।');
+      return;
+    }
+    var store = loadClientStore();
+    store[name] = state;
+    saveClientStore(store);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    refreshClientSelect();
+    document.getElementById('clientSelect').value = name;
+    alert('Client data সফলভাবে Save / Update হয়েছে।');
+  }
+  function loadSelectedClient() {
+    var sel = document.getElementById('clientSelect');
+    if (!sel || !sel.value) {
+      alert('Select Client থেকে একটি নাম নির্বাচন করুন।');
+      return;
+    }
+    var store = loadClientStore();
+    var state = store[sel.value];
+    if (!state) {
+      alert('এই client এর data পাওয়া যায়নি।');
+      return;
+    }
+    applyState(state);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+  function newClient() {
+    if (!confirm('New client এর জন্য ফর্ম একদম পরিষ্কার হয়ে যাবে. Continue?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+
+  /* ===== JSON Export / Import ===== */
+  function exportJson() {
+    var state = collectState();
+    var name = state.client && state.client.name ? state.client.name.replace(/[^a-z0-9]+/gi,'_') : 'client';
+    var fileName = 'board_hardware_worker_' + name + '.json';
+    var blob = new Blob([JSON.stringify(state, null, 2)], {type: 'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function importJson() {
+    var input = document.getElementById('importFile');
+    if (!input || !input.files || !input.files.length) {
+      alert('একটা JSON ফাইল সিলেক্ট করুন।');
+      return;
+    }
+    var file = input.files[0];
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        var state = JSON.parse(e.target.result || '{}');
+        applyState(state);
+        saveState();
+        alert('Data সফলভাবে load হয়েছে। চাইলে এখন Save / Update Client করে client list-এও ধরে রাখতে পারো।');
+      } catch (err) {
+        console.error(err);
+        alert('JSON ফাইল ঠিকভাবে পড়া যায়নি।');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (document.querySelector('#edgeTable tbody').rows.length === 0) {
+      addEdgeRow();
+    }
+    if (document.querySelector('#handleTable tbody').rows.length === 0) {
+      addHandleRow();
+    }
+    if (document.querySelector('#accessoryTable tbody').rows.length === 0) {
+      addAccessoryRow();
+    }
+    if (document.querySelector('#boardTable tbody').rows.length === 0) {
+      addBoardRow();
+    }
+    if (document.querySelector('#workerTable tbody').rows.length === 0) {
+      addWorkerRow();
+    }
+    refreshClientSelect();
+    loadStateFromStorage();
+  });
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('sw.js').catch(function(err) {
+        console.log('SW registration failed:', err);
+      });
+    });
+  }
+</script>
+</body>
+</html>

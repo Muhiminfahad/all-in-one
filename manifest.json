@@ -1,0 +1,9 @@
+{
+  "name": "Board, Hardware, Accessories & Worker Calculator",
+  "short_name": "Cabinet Part B",
+  "start_url": "./board_hardware_worker.html",
+  "display": "standalone",
+  "background_color": "#0c0f16",
+  "theme_color": "#111319",
+  "icons": []
+}
